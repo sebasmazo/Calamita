@@ -4,18 +4,30 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+from pytz import timezone
+from sklearn import metrics
 from sklearn.cluster import KMeans
 import random
 from sklearn.model_selection import train_test_split
 from sklearn import neighbors
 from sklearn.metrics import accuracy_score
+from datetime import datetime
 
 class Empresa:
-    idEmpresa = random.randrange(0000,9999)
-    def __init__(self, datafile):
-        self.data = self.preparacionData(datafile)
-        self.modelsData = self.clusteringModel(self.data) #modelsData has [model, model inertia, data with clusters]
-        self.predictiveModel = self.predictiveModel()
+    models = []
+    metricas = []
+    data = None
+    clusteringData = None
+    
+    def __init__(self, nombreEmpresa, sectorEmpresa):
+        self.idEmpresa = random.randrange(0000,9999)
+        self.nombreEmpresa = nombreEmpresa
+        self.sectorEmpresa = sectorEmpresa
+        self.fechaCreacionUsuario = datetime.utcnow()
+        
+        #self.data = self.preparacionData(datafile)     Logica programa
+        #self.clusteringData = self.clusteringModel(self.data) #modelsData has [model, model inertia, data with clusters]
+        #self.predictiveModel()
         
     
     def dataStatistics(self,dfdata):
@@ -29,37 +41,46 @@ class Empresa:
         data['Alq_Prop']=data['Alq_Prop'].astype('category')
         data['Sindicato']=data['Sindicato'].astype('category')
         data['Sexo']=data['Sexo'].astype('category')
-        data = pd.get_dummies(data,columns=['Casado','Carro','Alq_Prop','Sindicato','Sexo'])
-       
-        return data  
+        self.data = pd.get_dummies(data,columns=['Casado','Carro','Alq_Prop','Sindicato','Sexo'])
+         
       
-    def clusteringModel(self,data):
+    def clusteringModel(self):
         toClient = []
         model = KMeans(n_clusters=5,max_iter=500)
-        model.fit(data)
-        centroides=pd.DataFrame(model.cluster_centers_, columns=data.columns.values)
+        model.fit(self.data)
+        centroides=pd.DataFrame(model.cluster_centers_, columns=self.data.columns.values)
         print(centroides.round(0)) 
-        data["Clusters"] = model.labels_
+        tmp = self.data
+        tmp["Clusters"] = model.labels_
+        self.clusteringData = tmp
+        self.models.append(model)
         
-        toClient.append(data)
-        toClient.append(model)
-        return toClient
     
     #def exportClusteringModel(self): Understand how Pickle works
         #filename = 'Calamita-'+self.idEmpresa+'.pkl'
         #pickle.dump(self.modelsData, open(filename,'wb'))
     
     def predictiveModel(self):
-        features = self.modelsData[1].drop("Clusters", axis = 1)
-        predictions = self.modelsData[1]["Clusters"]
+        features = self.clusteringData.drop("Clusters", axis = 1)
+        predictions = self.clusteringData["Clusters"]
         X_train, X_test, Y_train, Y_test = train_test_split(features, predictions, test_size=0.3, stratify=predictions)
         model_Knn = neighbors.KNeighborsClassifier(n_neighbors = 1, metric='euclidean')
         model_Knn.fit(X_train, Y_train)
         Y_pred_knn = model_Knn.predict(X_test)      
         exactitud = accuracy_score(Y_test, Y_pred_knn)
+        self.metricas.append(exactitud)
         #print(exactitud) 1.0
-        
+        self.models.append(model_Knn)
+    
+    def toString(self):
+        return "Empresa ("+str(self.idEmpresa)+") "+self.nombreEmpresa+", enfocada a: "+self.sectorEmpresa+". Registrada en Calamita en la fecha: " + str(self.fechaCreacionUsuario)
         
           
-if __name__ == "__main__":
-    empresaEjemplo = Empresa("Data/Empleados.xlsx")
+if __name__ == "__main__": #TODO: Remove when merging with GUI
+    #Ejemplo de logica
+    empresaEjemplo = Empresa("Calamita INC", "Analitica de datos")  #datafile = 
+    print(empresaEjemplo.toString())
+    empresaEjemplo.preparacionData("Data/Empleados.xlsx")
+    empresaEjemplo.clusteringModel() 
+    empresaEjemplo.predictiveModel()
+    print(empresaEjemplo.models)
