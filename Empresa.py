@@ -15,7 +15,7 @@ from datetime import datetime
 
 class Empresa:
     models = []
-    metricas = []
+    metricas = [] #[,Exactitud]
     data = None
     clusteringData = None
     
@@ -54,6 +54,7 @@ class Empresa:
         tmp["Clusters"] = model.labels_
         self.clusteringData = tmp
         self.models.append(model)
+        self.metricas.append(model.inertia_)
         
     
     #def exportClusteringModel(self): Understand how Pickle works
@@ -83,4 +84,5 @@ if __name__ == "__main__": #TODO: Remove when merging with GUI
     empresaEjemplo.preparacionData("Data/Empleados.xlsx")
     empresaEjemplo.clusteringModel() 
     empresaEjemplo.predictiveModel()
-    print(empresaEjemplo.models)
+    print(empresaEjemplo.models) #Resultado esperado: [KMeans(max_iter=500, n_clusters=5), KNeighborsClassifier(metric='euclidean', n_neighbors=1)]
+    print(empresaEjemplo.metricas)
