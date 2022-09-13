@@ -1,21 +1,16 @@
-from copyreg import pickle
-from statistics import mode
 import pandas as pd 
-import numpy as np
 import matplotlib.pyplot as plt
-import sys
-from pytz import timezone
-from sklearn import metrics
 from sklearn.cluster import KMeans
 import random
 from sklearn.model_selection import train_test_split
 from sklearn import neighbors
 from sklearn.metrics import accuracy_score
 from datetime import datetime
+import pickle
 
 class Empresa:
-    models = []
-    metricas = [] #[,Exactitud]
+    models = [] #[Clustering model, predictive model]
+    metricas = [] #[Inertia,Exactitud]
     data = None
     clusteringData = None
     
@@ -24,11 +19,6 @@ class Empresa:
         self.nombreEmpresa = nombreEmpresa
         self.sectorEmpresa = sectorEmpresa
         self.fechaCreacionUsuario = datetime.utcnow()
-        
-        #self.data = self.preparacionData(datafile)     Logica programa
-        #self.clusteringData = self.clusteringModel(self.data) #modelsData has [model, model inertia, data with clusters]
-        #self.predictiveModel()
-        
     
     def dataStatistics(self,dfdata):
         print(dfdata.info())
@@ -43,7 +33,6 @@ class Empresa:
         data['Sexo']=data['Sexo'].astype('category')
         self.data = pd.get_dummies(data,columns=['Casado','Carro','Alq_Prop','Sindicato','Sexo'])
          
-      
     def clusteringModel(self):
         toClient = []
         model = KMeans(n_clusters=5,max_iter=500)
@@ -57,9 +46,10 @@ class Empresa:
         self.metricas.append(model.inertia_)
         
     
-    #def exportClusteringModel(self): Understand how Pickle works
-        #filename = 'Calamita-'+self.idEmpresa+'.pkl'
-        #pickle.dump(self.modelsData, open(filename,'wb'))
+    def exportModels(self):
+        filehandler = open("Models.obj","wb")
+        pickle.dump(self.models,filehandler)
+        filehandler.close()
     
     def predictiveModel(self):
         features = self.clusteringData.drop("Clusters", axis = 1)
@@ -70,7 +60,6 @@ class Empresa:
         Y_pred_knn = model_Knn.predict(X_test)      
         exactitud = accuracy_score(Y_test, Y_pred_knn)
         self.metricas.append(exactitud)
-        #print(exactitud) 1.0
         self.models.append(model_Knn)
     
     def toString(self):
@@ -86,3 +75,4 @@ if __name__ == "__main__": #TODO: Remove when merging with GUI
     empresaEjemplo.predictiveModel()
     print(empresaEjemplo.models) #Resultado esperado: [KMeans(max_iter=500, n_clusters=5), KNeighborsClassifier(metric='euclidean', n_neighbors=1)]
     print(empresaEjemplo.metricas)
+    
