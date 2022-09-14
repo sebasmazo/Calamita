@@ -12,7 +12,7 @@ class Empresa:
     models = [] #[Clustering model, predictive model]
     metricas = [] #[Inertia,Exactitud]
     data = pd.DataFrame()
-    clusteringData = None
+    clusteringData = None #clusteringData tiene los resultados del modelo de CLustering (registro con su respectivo cluster)
     
     def __init__(self, nombreEmpresa, sectorEmpresa):
         self.idEmpresa = random.randrange(0000,9999)
@@ -39,7 +39,6 @@ class Empresa:
         model = KMeans(n_clusters=5,max_iter=500)
         model.fit(self.data)
         centroides=pd.DataFrame(model.cluster_centers_, columns=self.data.columns.values)
-        print(centroides.round(0)) 
         tmp = self.data
         tmp["Clusters"] = model.labels_
         self.clusteringData = tmp
@@ -73,9 +72,10 @@ if __name__ == "__main__": #TODO: Remove when merging with GUI
     empresaEjemplo = Empresa("Calamita INC", "Analitica de datos")  #datafile = 
     print(empresaEjemplo.toString())
     empresaEjemplo.preparacionData("Data/Empleados.xlsx")
-    empresaEjemplo.dataStatistics()
+    #empresaEjemplo.dataStatistics() Descripción estadistica de la data
     empresaEjemplo.clusteringModel() 
     empresaEjemplo.predictiveModel()
+    print(empresaEjemplo.clusteringData) 
     print(empresaEjemplo.models) #Resultado esperado: [KMeans(max_iter=500, n_clusters=5), KNeighborsClassifier(metric='euclidean', n_neighbors=1)]
     print(empresaEjemplo.metricas)
     
