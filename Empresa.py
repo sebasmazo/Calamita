@@ -11,7 +11,7 @@ import pickle
 class Empresa:
     models = [] #[Clustering model, predictive model]
     metricas = [] #[Inertia,Exactitud]
-    data = None
+    data = pd.DataFrame()
     clusteringData = None
     
     def __init__(self, nombreEmpresa, sectorEmpresa):
@@ -20,9 +20,10 @@ class Empresa:
         self.sectorEmpresa = sectorEmpresa
         self.fechaCreacionUsuario = datetime.utcnow()
     
-    def dataStatistics(self,dfdata):
-        print(dfdata.info())
-        print(dfdata.describe())
+    def dataStatistics(self):
+        if not self.data.empty:
+            print(self.data.info())
+            print(self.data.describe())
     
     def preparacionData(self,filename):
         data = pd.read_excel(filename, sheet_name=0)
@@ -67,10 +68,12 @@ class Empresa:
         
           
 if __name__ == "__main__": #TODO: Remove when merging with GUI
+
     #Ejemplo de logica
     empresaEjemplo = Empresa("Calamita INC", "Analitica de datos")  #datafile = 
     print(empresaEjemplo.toString())
     empresaEjemplo.preparacionData("Data/Empleados.xlsx")
+    empresaEjemplo.dataStatistics()
     empresaEjemplo.clusteringModel() 
     empresaEjemplo.predictiveModel()
     print(empresaEjemplo.models) #Resultado esperado: [KMeans(max_iter=500, n_clusters=5), KNeighborsClassifier(metric='euclidean', n_neighbors=1)]
