@@ -15,9 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from CalamitaPage.views import index
+from CalamitaPage import views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 
 urlpatterns = [
+    #Aqui se pondran las vistas.
     path('admin/', admin.site.urls),
-    path('index/', index),
+    path('',views.index),
+    
 ]
+
+urlpatterns += staticfiles_urlpatterns()
