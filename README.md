@@ -1,4 +1,4 @@
-# Calamita
+# Calamita Software
 
 Software libre para perfilamiento de empleados con una base de datos excel estandarizada.
 
@@ -8,12 +8,12 @@ Implementado con Django Framework
 
 
 
-# Funciones
--Perfilar empleados
+# Funciones principales
+Perfilar empleados
 
--Operaciones CRUD
+Operaciones CRUD
 
--Pie-view de los clusters de empleados
+Pie-view de los clusters de empleados
 
 
 
