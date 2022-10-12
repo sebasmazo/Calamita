@@ -24,6 +24,7 @@ try:
             sector_empresa.config(state=DISABLED)
             empresa_usuario = Empresa(name_obj, sector_obj)
             messagebox.showinfo(message="Registro exitoso", title="Update")
+            #Habilitar botón en el GUI principal para upload data manejar un flujo permisivo con estados de botones
         else:
             messagebox.showerror(message="Por favor llenar los datos necesarios", title="Warning")
         
