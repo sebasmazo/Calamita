@@ -25,8 +25,8 @@ class Empresa:
             print(self.data.info())
             print(self.data.describe())
     
-    def preparacionData(self,filename):
-        data = pd.read_excel(filename, sheet_name=0)
+    def preparacionData(self,dataframe):
+        data = dataframe
         data['Casado']=data['Casado'].astype('category')
         data['Carro']=data['Carro'].astype('category')
         data['Alq_Prop']=data['Alq_Prop'].astype('category')
