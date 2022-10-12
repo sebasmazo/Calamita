@@ -7,7 +7,7 @@ Implementado con Django Framework
 
 
 
-#Funciones
+# Funciones
 Perfilar empleados
 Operaciones CRUD
 Pie-view de los clusters de empleados
