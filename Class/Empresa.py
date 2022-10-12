@@ -15,17 +15,20 @@ class Empresa:
     clusteringData = None #clusteringData tiene los resultados del modelo de CLustering (registro con su respectivo cluster)
     
     def __init__(self, nombreEmpresa, sectorEmpresa):
+        '''Constructor de la clase empresa'''
         self.idEmpresa = random.randrange(0000,9999)
         self.nombreEmpresa = nombreEmpresa
         self.sectorEmpresa = sectorEmpresa
         self.fechaCreacionUsuario = datetime.utcnow()
     
     def dataStatistics(self):
+        '''Si el campo data de la empresa, NO está vacío, imprime la información del dataframe y la descripción estadistica'''
         if not self.data.empty:
             print(self.data.info())
             print(self.data.describe())
     
     def preparacionData(self,dataframe):
+        '''Preparación de los datos'''
         data = dataframe
         data['Casado']=data['Casado'].astype('category')
         data['Carro']=data['Carro'].astype('category')
@@ -35,6 +38,7 @@ class Empresa:
         self.data = pd.get_dummies(data,columns=['Casado','Carro','Alq_Prop','Sindicato','Sexo'])
          
     def clusteringModel(self):
+        '''Genera el modelo de clustering y lo añade al array models de la empresa, hace lo mismo con las metricas del modelo'''
         toClient = []
         model = KMeans(n_clusters=5,max_iter=500)
         model.fit(self.data)
@@ -47,11 +51,13 @@ class Empresa:
         
     
     def exportModels(self):
-        filehandler = open("Models.obj","wb")
-        pickle.dump(self.models,filehandler)
-        filehandler.close()
+        '''Función para descargar el modelo como un pickle'''
+        with open("Models.obj", "wb") as filehandler:
+            pickle.dump(self.models,filehandler)
+            
     
     def predictiveModel(self):
+        '''Genera el modelo predictivo y lo añade al array models de la empresa, hace lo mismo con las metricas del modelo'''
         features = self.clusteringData.drop("Clusters", axis = 1)
         predictions = self.clusteringData["Clusters"]
         X_train, X_test, Y_train, Y_test = train_test_split(features, predictions, test_size=0.3, stratify=predictions)

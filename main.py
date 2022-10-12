@@ -28,7 +28,7 @@ try:
         else:
             messagebox.showerror(message="Por favor llenar los datos necesarios", title="Warning")
         
-    def openNewWindow():
+    def openNewWindow() -> None:
         # Toplevel object which will
         # be treated as a new window
         newWindow = Toplevel(GUI)
@@ -49,6 +49,7 @@ try:
         ttk.Button(newWindow,command=lambda: createEmpresa(nombre_empresa,sector_empresa),text="Enviar datos").pack()
     
     ttk.Button(frm,command=openNewWindow, text="Registro").grid(column=0,row=2)
+    upload_data = ttk.Button(frm, command=openDataWindow,text="Subir datos")
     GUI.mainloop()
 except Exception:
     print("Error")
