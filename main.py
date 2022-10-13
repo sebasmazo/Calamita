@@ -53,7 +53,8 @@ try:
         ttk.Button(newWindow,command=lambda: createEmpresa(nombre_empresa,sector_empresa),text="Enviar datos").pack()    
     #endregion
     
-    #region data handling
+    #region file handling
+    
     def openFileExplorer():
         '''Metodo para manejo de archivos con Tkinter'''
         filetypes = (
@@ -77,13 +78,21 @@ try:
                 
     def exportModels():
         empresas[0].exportModels()
-                
+        messagebox.showinfo(message="Pickle descargado", title="Update")
+    
+    def exportData():
+        empresas[0].exportData()
+    
+    def dataAnalysis():    
+        
     #endregion
     
     #region ML Models
     def clusteringModel():
         empresas[0].clusteringModel()
         predictive.config(state="normal")
+        exportDataButton.config(state="normal")
+        
     def predictiveModel():
         empresas[0].predictiveModel()
         exportButton.config(state="normal")
@@ -98,6 +107,8 @@ try:
     predictive.grid(column=1,row=4)
     exportButton = ttk.Button(frm, command=exportModels, text= "Descargar bundle de modelos",state=DISABLED)
     exportButton.grid(column=0,row=5)
+    exportDataButton = ttk.Button(frm, command=exportData, text= "Exportar el perfilado a excel",state=DISABLED)
+    exportDataButton.grid(column=0,row=6)
     
     
     GUI.mainloop()

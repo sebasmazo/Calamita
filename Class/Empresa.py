@@ -54,7 +54,7 @@ class Empresa:
         '''Función para descargar el modelo como un pickle'''
         with open("Models.obj", "wb") as filehandler:
             pickle.dump(self.models,filehandler)
-            
+        
     
     def predictiveModel(self):
         '''Genera el modelo predictivo y lo añade al array models de la empresa, hace lo mismo con las metricas del modelo'''
@@ -71,13 +71,16 @@ class Empresa:
     def toString(self):
         return "Empresa ("+str(self.idEmpresa)+") "+self.nombreEmpresa+", enfocada a: "+self.sectorEmpresa+". Registrada en Calamita en la fecha: " + str(self.fechaCreacionUsuario)
         
-          
+    def exportData(self):
+        '''Exportar data con clusters, debe tener el nombre y ruta deseada del archivo'''
+        self.clusteringData.to_excel("clustersEmpleados.xlsx")
+        
 if __name__ == "__main__": #TODO: Remove when merging with GUI
 
     #Ejemplo de logica
     empresaEjemplo = Empresa("Calamita INC", "Analitica de datos")  #datafile = 
     print(empresaEjemplo.toString())
-    empresaEjemplo.preparacionData(pd.read_excel("Tests/Empleados.xlsx",sheet_name=0))
+    empresaEjemplo.preparacionData(pd.read_excel("Empleados.xlsx",sheet_name=0))
     #empresaEjemplo.dataStatistics() Descripción estadistica de la data
     empresaEjemplo.clusteringModel() 
     empresaEjemplo.predictiveModel()
