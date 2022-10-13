@@ -1,5 +1,3 @@
-from email import message
-from os import stat
 from tkinter import *
 from tkinter import ttk
 from Class.Empresa import Empresa
@@ -67,11 +65,13 @@ try:
                 empresas[0].preparacionData(pd.read_csv(file_path.name))
                 messagebox.showinfo(message="Subida exitosa, archivo: "+file_path.name, title="Update")
                 upload_data.config(state=DISABLED)
+                analisisButton.config(state="normal")
                 clustering.config(state="normal")
             elif file_path.name.endswith(".xlsx"):
                 empresas[0].preparacionData(pd.read_excel(file_path.name,sheet_name=0))
                 messagebox.showinfo(message="Subida exitosa, archivo: "+file_path.name, title="Update")
                 upload_data.config(state=DISABLED)
+                analisisButton.config(state="normal")
                 clustering.config(state="normal")
             else:
                 messagebox.showerror(message="Solo son validos formatos xlsx o csv", title="Warning")
@@ -83,8 +83,9 @@ try:
     def exportData():
         empresas[0].exportData()
     
-    def dataAnalysis():    
-        
+    def dataAnalysis():
+        data = empresas[0].dataStatistics()
+        return True
     #endregion
     
     #region ML Models
@@ -109,10 +110,12 @@ try:
     exportButton.grid(column=0,row=5)
     exportDataButton = ttk.Button(frm, command=exportData, text= "Exportar el perfilado a excel",state=DISABLED)
     exportDataButton.grid(column=0,row=6)
+    analisisButton = ttk.Button(frm, command=dataAnalysis,text="Analizar datos",state=DISABLED)
+    analisisButton.grid(column=1,row=3)
+    
     
     
     GUI.mainloop()
-    
     
 except Exception:
     print("Error")
