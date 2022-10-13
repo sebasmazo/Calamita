@@ -24,8 +24,9 @@ class Empresa:
     def dataStatistics(self):
         '''Si el campo data de la empresa, NO está vacío, imprime la información del dataframe y la descripción estadistica'''
         if not self.data.empty:
-            data_return = [self.data.info(),self.data.describe()]
+            data_return = self.data.describe()
             return data_return
+        
     def preparacionData(self,dataframe):
         '''Preparación de los datos'''
         data = dataframe

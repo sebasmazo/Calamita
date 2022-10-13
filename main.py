@@ -4,6 +4,8 @@ from Class.Empresa import Empresa
 from tkinter import messagebox
 from tkinter.filedialog import askopenfile 
 import pandas as pd
+from pandastable import Table, TableModel
+
 try: 
     empresas = []  
     file_path = None    
@@ -84,8 +86,13 @@ try:
         empresas[0].exportData()
     
     def dataAnalysis():
-        data = empresas[0].dataStatistics()
-        return True
+        data = empresas[0].dataStatistics() #data.describe()
+        f = Toplevel(GUI)
+        table = pt = Table(f, dataframe=empresas[0].data,
+                                    showtoolbar=True, showstatusbar=True)
+        pt.show()
+        
+        
     #endregion
     
     #region ML Models
