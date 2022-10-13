@@ -1,4 +1,5 @@
 from email import message
+from os import stat
 from tkinter import *
 from tkinter import ttk
 from Class.Empresa import Empresa
@@ -15,7 +16,7 @@ try:
     frm.grid()
     ttk.Label(frm, text="Bienvenido a nuestro software de perfilamiento, Calamita").grid(column=0,row=0)
     ttk.Label(frm, text="Registrarse").grid(column=0,row=1)
-   
+   #region normal WorkFlow
     def createEmpresa(nombre_empresa,sector_empresa):
         '''Función para manejar los datos que deja el registro realizado por el usuario'''
         name_obj = nombre_empresa.get()
@@ -50,6 +51,7 @@ try:
         sector_empresa = ttk.Entry(newWindow)
         sector_empresa.pack()
         ttk.Button(newWindow,command=lambda: createEmpresa(nombre_empresa,sector_empresa),text="Enviar datos").pack()    
+    #endregion
     
     #region data handling
     def openFileExplorer():
@@ -73,6 +75,9 @@ try:
             else:
                 messagebox.showerror(message="Solo son validos formatos xlsx o csv", title="Warning")
                 
+    def exportModels():
+        empresas[0].exportModels()
+                
     #endregion
     
     #region ML Models
@@ -81,13 +86,20 @@ try:
         predictive.config(state="normal")
     def predictiveModel():
         empresas[0].predictiveModel()
+        exportButton.config(state="normal")
     #endregion
     
     ttk.Button(frm,command=openNewWindow, text="Registro").grid(column=0,row=2)
     upload_data = ttk.Button(frm, command=openFileExplorer,text="Subir datos",state=DISABLED)
     upload_data.grid(column=0,row=3)
     clustering = ttk.Button(frm, command=clusteringModel, text= "Perfilar base de datos",state=DISABLED)
-    predictive = ttk.Button(frm, command=clusteringModel, text= "Modelo predictivo",state=DISABLED)
+    clustering.grid(column=0,row=4)
+    predictive = ttk.Button(frm, command=predictiveModel, text= "Modelo predictivo",state=DISABLED)
+    predictive.grid(column=1,row=4)
+    exportButton = ttk.Button(frm, command=exportModels, text= "Descargar bundle de modelos",state=DISABLED)
+    exportButton.grid(column=0,row=5)
+    
+    
     GUI.mainloop()
     
     
