@@ -77,11 +77,12 @@ if __name__ == "__main__": #TODO: Remove when merging with GUI
     #Ejemplo de logica
     empresaEjemplo = Empresa("Calamita INC", "Analitica de datos")  #datafile = 
     print(empresaEjemplo.toString())
-    empresaEjemplo.preparacionData("Data/Empleados.xlsx")
+    empresaEjemplo.preparacionData(pd.read_excel("Tests/Empleados.xlsx",sheet_name=0))
     #empresaEjemplo.dataStatistics() Descripción estadistica de la data
     empresaEjemplo.clusteringModel() 
     empresaEjemplo.predictiveModel()
     print(empresaEjemplo.clusteringData) 
     print(empresaEjemplo.models) #Resultado esperado: [KMeans(max_iter=500, n_clusters=5), KNeighborsClassifier(metric='euclidean', n_neighbors=1)]
     print(empresaEjemplo.metricas)
+    empresaEjemplo.exportModels()
     
