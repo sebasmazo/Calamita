@@ -86,7 +86,7 @@ try:
         empresas[0].exportData()
     
     def dataAnalysis():
-        data = empresas[0].dataStatistics() #data.describe()
+        data = empresas[0].dataStatistics() #data.describe() #Buscar como mostrar el describe
         f = Toplevel(GUI)
         table = pt = Table(f, dataframe=empresas[0].data,
                                     showtoolbar=True, showstatusbar=True)
