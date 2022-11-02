@@ -4,19 +4,23 @@ from Class.Empresa import Empresa
 from tkinter import messagebox
 from tkinter.filedialog import askopenfile 
 import pandas as pd
-from pandastable import Table, TableModel
+from pandastable import Table
+import matplotlib.pyplot as plt
+import matplotlib
 
 try: 
+    matplotlib.use('TkAgg')
     empresas = []  
     file_path = None    
     GUI = Tk()
     GUI.title("Calamita")
-    GUI.geometry("1280x720")
+    GUI.geometry("700x300")
     frm = ttk.Frame(GUI, padding=10)
     frm.grid()
-    ttk.Label(frm, text="Bienvenido a nuestro software de perfilamiento, Calamita").grid(column=0,row=0)
-    ttk.Label(frm, text="Registrarse").grid(column=0,row=1)
+    ttk.Label(frm, text="Bienvenido a nuestro software de perfilamiento, Calamita").grid(column=1,row=0)
    #region normal WorkFlow
+    def helpWindow():
+        messagebox.showinfo("Ayuda funcionamiento", "1. Registrarse \n 2. Subir los datos de la empresa \n 3. Puedes analizar los datos ingresados con un CRUD integrado de excel \n 4. Realizar el entrenamiento de los modelos de clustering y luego el modelo predictivo \n 5. Se habilita la opción de descargar un bundle (Pickle) de los modelos \n 6.Descargar la data con los clusters calculados")
     def createEmpresa(nombre_empresa,sector_empresa):
         '''Función para manejar los datos que deja el registro realizado por el usuario'''
         name_obj = nombre_empresa.get()
@@ -91,6 +95,20 @@ try:
         table = pt = Table(f, dataframe=empresas[0].data,
                                     showtoolbar=True, showstatusbar=True)
         pt.show()
+        if "Clusters" in empresas[0].data:
+            data_tmp = empresas[0].data
+            #centroids_dataframe = empresas[0].clusterDescription()
+            #clusters_profiling = Toplevel(GUI)
+            #table = pc = Table(clusters_profiling, dataframe=centroids_dataframe)
+            #pc.show()
+            bar_chart = plt.figure(figsize=(10,5))
+            plt.bar(["C1","C2","C3","C4","C5"], [data_tmp[data_tmp.Clusters == 0].shape[0],data_tmp[data_tmp.Clusters == 1].shape[0],data_tmp[data_tmp.Clusters == 2].shape[0],data_tmp[data_tmp.Clusters == 3].shape[0],data_tmp[data_tmp.Clusters == 4].shape[0]])
+            plt.xlabel("Clusters")
+            plt.ylabel("# de clusters")
+            plt.title("Distribución de clusters")
+            plt.show()
+            
+            
         
         
     #endregion
@@ -106,7 +124,9 @@ try:
         exportButton.config(state="normal")
     #endregion
     
+    
     ttk.Button(frm,command=openNewWindow, text="Registro").grid(column=0,row=2)
+    ttk.Button(frm,command=helpWindow, text="Ayuda").grid(column=1,row=2)
     upload_data = ttk.Button(frm, command=openFileExplorer,text="Subir datos",state=DISABLED)
     upload_data.grid(column=0,row=3)
     clustering = ttk.Button(frm, command=clusteringModel, text= "Perfilar base de datos",state=DISABLED)
@@ -124,5 +144,5 @@ try:
     
     GUI.mainloop()
     
-except Exception:
-    print("Error")
+except Exception as e:
+    print(e)

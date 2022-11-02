@@ -7,19 +7,28 @@ from sklearn import neighbors
 from sklearn.metrics import accuracy_score
 from datetime import datetime
 import pickle
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 
 class Empresa:
     models = [] #[Clustering model, predictive model]
     metricas = [] #[Inertia,Exactitud]
     data = pd.DataFrame()
     clusteringData = None #clusteringData tiene los resultados del modelo de CLustering (registro con su respectivo cluster)
-    
+    min_max_scaler = MinMaxScaler()
     def __init__(self, nombreEmpresa, sectorEmpresa):
         '''Constructor de la clase empresa'''
         self.idEmpresa = random.randrange(0000,9999)
         self.nombreEmpresa = nombreEmpresa
         self.sectorEmpresa = sectorEmpresa
         self.fechaCreacionUsuario = datetime.utcnow()
+    
+    #def clusterDescription(self):
+        #if len(self.models) >= 1:
+            #tmp = self.data.drop('Clusters', axis=1)
+            #centroides = pd.DataFrame(self.models[0].cluster_centers_, tmp.columns.values)
+            #centroides = centroides.round(0)
+            #return centroides
     
     def dataStatistics(self):
         '''Si el campo data de la empresa, NO está vacío, imprime la información del dataframe y la descripción estadistica'''
@@ -30,12 +39,15 @@ class Empresa:
     def preparacionData(self,dataframe):
         '''Preparación de los datos'''
         data = dataframe
+        self.min_max_scaler.fit(data[['Sueldo',  'Hijos',  'Incapacidades',  'Antiguedad']]) #Ajuste de parámetro
+        data[['Sueldo', 'Hijos',  'Incapacidades',  'Antiguedad']]= self.min_max_scaler.transform(data[['Sueldo',  'Hijos',  'Incapacidades',  'Antiguedad']])
         data['Casado']=data['Casado'].astype('category')
         data['Carro']=data['Carro'].astype('category')
         data['Alq_Prop']=data['Alq_Prop'].astype('category')
         data['Sindicato']=data['Sindicato'].astype('category')
         data['Sexo']=data['Sexo'].astype('category')
-        self.data = pd.get_dummies(data,columns=['Casado','Carro','Alq_Prop','Sindicato','Sexo'])
+        self.data = pd.get_dummies(data,columns=['Casado','Carro','Alq_Prop','Sindicato','Sexo'],drop_first=True)
+        
          
     def clusteringModel(self):
         '''Genera el modelo de clustering y lo añade al array models de la empresa, hace lo mismo con las metricas del modelo'''
@@ -48,6 +60,7 @@ class Empresa:
         self.clusteringData = tmp
         self.models.append(model)
         self.metricas.append(model.inertia_)
+        self.data[['Sueldo', 'Hijos',  'Incapacidades',  'Antiguedad']]=self.min_max_scaler.inverse_transform(self.data[['Sueldo', 'Hijos',  'Incapacidades',  'Antiguedad']])
         
     
     def exportModels(self):
@@ -76,7 +89,6 @@ class Empresa:
         self.clusteringData.to_excel("clustersEmpleados.xlsx")
         
 if __name__ == "__main__": #TODO: Remove when merging with GUI
-
     #Ejemplo de logica
     empresaEjemplo = Empresa("Calamita INC", "Analitica de datos")  #datafile = 
     print(empresaEjemplo.toString())
