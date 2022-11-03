@@ -7,6 +7,8 @@ import pandas as pd
 from pandastable import Table
 import matplotlib.pyplot as plt
 import matplotlib
+# import customtkinter libreria que Nico esta probando para poner bonito el TK https://github.com/TomSchimansky/CustomTkinter/wiki
+
 
 try: 
     matplotlib.use('TkAgg')
@@ -14,10 +16,12 @@ try:
     file_path = None    
     GUI = Tk()
     GUI.title("Calamita")
+    fotosapo = PhotoImage(file='images/Saposilueta.png')
+    GUI.iconphoto(False,fotosapo)
     GUI.geometry("700x300")
     frm = ttk.Frame(GUI, padding=10)
     frm.grid()
-    ttk.Label(frm, text="Bienvenido a nuestro software de perfilamiento, Calamita").grid(column=1,row=0)
+    ttk.Label(frm, text="Bienvenido a nuestro software de perfilamiento de clientes, Calamita Software").grid(column=1,row=0)
    #region normal WorkFlow
     def helpWindow():
         messagebox.showinfo("Ayuda funcionamiento", "1. Registrarse \n 2. Subir los datos de la empresa \n 3. Puedes analizar los datos ingresados con un CRUD integrado de excel \n 4. Realizar el entrenamiento de los modelos de clustering y luego el modelo predictivo \n 5. Se habilita la opción de descargar un bundle (Pickle) de los modelos \n 6.Descargar la data con los clusters calculados")
@@ -43,6 +47,7 @@ try:
         # sets the title of the
         # Toplevel widget
         newWindow.title("Registro empresa")
+        newWindow.iconphoto(False,fotosapo)
         # sets the geometry of toplevel
         newWindow.geometry("1024x768")
         # A Label widget to show in toplevel
@@ -54,7 +59,8 @@ try:
         Label(newWindow,text="Sector empresa").pack()
         sector_empresa = ttk.Entry(newWindow)
         sector_empresa.pack()
-        ttk.Button(newWindow,command=lambda: createEmpresa(nombre_empresa,sector_empresa),text="Enviar datos").pack()    
+        ttk.Button(newWindow,command=lambda: createEmpresa(nombre_empresa,sector_empresa),text="Enviar datos").pack()
+
     #endregion
     
     #region file handling
@@ -88,7 +94,7 @@ try:
     
     def exportData():
         empresas[0].exportData()
-    
+   
     def dataAnalysis():
         data = empresas[0].dataStatistics() #data.describe() #Buscar como mostrar el describe
         f = Toplevel(GUI)
@@ -101,14 +107,25 @@ try:
             #clusters_profiling = Toplevel(GUI)
             #table = pc = Table(clusters_profiling, dataframe=centroids_dataframe)
             #pc.show()
-            bar_chart = plt.figure(figsize=(10,5))
-            plt.bar(["C1","C2","C3","C4","C5"], [data_tmp[data_tmp.Clusters == 0].shape[0],data_tmp[data_tmp.Clusters == 1].shape[0],data_tmp[data_tmp.Clusters == 2].shape[0],data_tmp[data_tmp.Clusters == 3].shape[0],data_tmp[data_tmp.Clusters == 4].shape[0]])
-            plt.xlabel("Clusters")
-            plt.ylabel("# de clusters")
+            plt.figure("Clusters en pie chart")
+            labels = ["C1","C2","C3","C4","C5"]
+            values=empresas[0].data['Clusters'].value_counts() 
+            plt.pie(empresas[0].data['Clusters'].value_counts(),labels=["C1","C2","C3","C4","C5"],autopct=lambda p : '{:.2f}%  ({:,.0f})'.format(p,p * sum(values)/100))
+            #plt.xlabel("Clusters")
+            #plt.ylabel("# de clusters")
             plt.title("Distribución de clusters")
             plt.show()
             
-            
+            #centroids_dataframe = empresas[0].clusterDescription()
+            #clusters_profiling = Toplevel(GUI)
+            #table = pc = Table(clusters_profiling, dataframe=centroids_dataframe)
+            #pc.show()
+            bar_chart = plt.figure(figsize=(10,5))
+            plt.bar(["C1","C2","C3","C4","C5"], [data_tmp[data_tmp.Clusters == 0].shape[0],data_tmp[data_tmp.Clusters == 1].shape[0],data_tmp[data_tmp.Clusters == 2].shape[0],data_tmp[data_tmp.Clusters == 3].shape[0],data_tmp[data_tmp.Clusters == 4].shape[0]])
+            plt.xlabel("Clusters")
+            plt.ylabel("# de empleados por cluster")
+            plt.title("Distribución de clusters")
+            plt.show()
         
         
     #endregion
@@ -139,6 +156,7 @@ try:
     exportDataButton.grid(column=0,row=6)
     analisisButton = ttk.Button(frm, command=dataAnalysis,text="Analizar datos",state=DISABLED)
     analisisButton.grid(column=1,row=3)
+
     
     
     
