@@ -7,21 +7,24 @@ import pandas as pd
 from pandastable import Table
 import matplotlib.pyplot as plt
 import matplotlib
-# import customtkinter libreria que Nico esta probando para poner bonito el TK https://github.com/TomSchimansky/CustomTkinter/wiki
-
+import customtkinter
+# https://github.com/TomSchimansky/CustomTkinter/wiki
+customtkinter.set_appearance_mode("light")  # Modes: system (default), light, dark
+customtkinter.set_default_color_theme("dark-blue")  # Themes: blue (default), dark-blue, green
 
 try: 
     matplotlib.use('TkAgg')
     empresas = []  
     file_path = None    
-    GUI = Tk()
+    GUI = customtkinter.CTk()
     GUI.title("Calamita")
     fotosapo = PhotoImage(file='images/Saposilueta.png')
     GUI.iconphoto(False,fotosapo)
-    GUI.geometry("700x300")
-    frm = ttk.Frame(GUI, padding=10)
+    GUI.geometry(f"{515}x{190}")
+    frm = customtkinter.CTkFrame(GUI,width=1080,height=1080)
+
     frm.grid()
-    ttk.Label(frm, text="Bienvenido a nuestro software de perfilamiento de clientes, Calamita Software").grid(column=1,row=0)
+    customtkinter.CTkLabel(frm, text="Bienvenido a nuestro software de perfilamiento de clientes, Calamita").grid(column=0,row=0)
    #region normal WorkFlow
     def helpWindow():
         messagebox.showinfo("Ayuda funcionamiento", "1. Registrarse \n 2. Subir los datos de la empresa \n 3. Puedes analizar los datos ingresados con un CRUD integrado de excel \n 4. Realizar el entrenamiento de los modelos de clustering y luego el modelo predictivo \n 5. Se habilita la opción de descargar un bundle (Pickle) de los modelos \n 6.Descargar la data con los clusters calculados")
@@ -34,8 +37,10 @@ try:
             sector_empresa.config(state=DISABLED)
             empresas.append(Empresa(name_obj, sector_obj)) 
             messagebox.showinfo(message="Registro exitoso", title="Update")
-            upload_data.config(state="normal")
+            upload_data.configure(state="normal")
             #Habilitar botón en el GUI principal para upload data manejar un flujo permisivo con estados de botones
+            registrobutton.configure(state="disabled")
+            
         else:
             messagebox.showerror(message="Por favor llenar los datos necesarios", title="Warning")
         
@@ -59,7 +64,8 @@ try:
         Label(newWindow,text="Sector empresa").pack()
         sector_empresa = ttk.Entry(newWindow)
         sector_empresa.pack()
-        ttk.Button(newWindow,command=lambda: createEmpresa(nombre_empresa,sector_empresa),text="Enviar datos").pack()
+        customtkinter.CTkButton(newWindow,width=120,height=32,border_width=0,corner_radius=8,command=lambda: createEmpresa(nombre_empresa,sector_empresa),text="Enviar datos").pack()
+        
 
     #endregion
     
@@ -82,9 +88,9 @@ try:
             elif file_path.name.endswith(".xlsx"):
                 empresas[0].preparacionData(pd.read_excel(file_path.name,sheet_name=0))
                 messagebox.showinfo(message="Subida exitosa, archivo: "+file_path.name, title="Update")
-                upload_data.config(state=DISABLED)
-                analisisButton.config(state="normal")
-                clustering.config(state="normal")
+                upload_data.configure(state=DISABLED)
+                analisisButton.configure(state="normal")
+                clustering.configure(state="normal")
             else:
                 messagebox.showerror(message="Solo son validos formatos xlsx o csv", title="Warning")
                 
@@ -133,28 +139,29 @@ try:
     #region ML Models
     def clusteringModel():
         empresas[0].clusteringModel()
-        predictive.config(state="normal")
-        exportDataButton.config(state="normal")
+        predictive.configure(state="normal")
+        exportDataButton.configure(state="normal")
         
     def predictiveModel():
         empresas[0].predictiveModel()
-        exportButton.config(state="normal")
+        exportButton.configure(state="normal")
     #endregion
     
     
-    ttk.Button(frm,command=openNewWindow, text="Registro").grid(column=0,row=2)
-    ttk.Button(frm,command=helpWindow, text="Ayuda").grid(column=1,row=2)
-    upload_data = ttk.Button(frm, command=openFileExplorer,text="Subir datos",state=DISABLED)
-    upload_data.grid(column=0,row=3)
-    clustering = ttk.Button(frm, command=clusteringModel, text= "Perfilar base de datos",state=DISABLED)
-    clustering.grid(column=0,row=4)
-    predictive = ttk.Button(frm, command=predictiveModel, text= "Modelo predictivo",state=DISABLED)
-    predictive.grid(column=1,row=4)
-    exportButton = ttk.Button(frm, command=exportModels, text= "Descargar bundle de modelos",state=DISABLED)
-    exportButton.grid(column=0,row=5)
-    exportDataButton = ttk.Button(frm, command=exportData, text= "Exportar el perfilado a excel",state=DISABLED)
-    exportDataButton.grid(column=0,row=6)
-    analisisButton = ttk.Button(frm, command=dataAnalysis,text="Analizar datos",state=DISABLED)
+    registrobutton=customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8,command=openNewWindow, text="Registro")
+    registrobutton.grid(column=0,row=1)
+    customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8,command=helpWindow, text="Ayuda").grid(column=1,row=5)
+    upload_data = customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8, command=openFileExplorer,text="Subir datos",state=DISABLED)
+    upload_data.grid(column=0,row=2)
+    clustering = customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8, command=clusteringModel, text= "Perfilar base de datos",state=DISABLED)
+    clustering.grid(column=0,row=3)
+    predictive = customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8, command=predictiveModel, text= "Modelo predictivo",state=DISABLED)
+    predictive.grid(column=1,row=2)
+    exportButton = customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8, command=exportModels, text= "Descargar bundle de modelos",state=DISABLED)
+    exportButton.grid(column=0,row=4)
+    exportDataButton = customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8, command=exportData, text= "Exportar el perfilado a excel",state=DISABLED)
+    exportDataButton.grid(column=0,row=5)
+    analisisButton = customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8, command=dataAnalysis,text="Analizar datos",state=DISABLED)
     analisisButton.grid(column=1,row=3)
 
     
