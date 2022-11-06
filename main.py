@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import customtkinter
 # https://github.com/TomSchimansky/CustomTkinter/wiki
-customtkinter.set_appearance_mode("light")  # Modes: system (default), light, dark
+#customtkinter.set_appearance_mode("light")  # Modes: system (default), light, dark
 customtkinter.set_default_color_theme("dark-blue")  # Themes: blue (default), dark-blue, green
 
 try: 
@@ -18,13 +18,15 @@ try:
     file_path = None    
     GUI = customtkinter.CTk()
     GUI.title("Calamita")
-    fotosapo = PhotoImage(file='images/Saposilueta.png')
+    fotosapo = PhotoImage(file='images/SaposiluetaBlanco.png')
+    MINIfotosapo = PhotoImage(file='images/MINISaposiluetaBlanco.png')
     GUI.iconphoto(False,fotosapo)
-    GUI.geometry(f"{515}x{190}")
-    frm = customtkinter.CTkFrame(GUI,width=1080,height=1080)
-
-    frm.grid()
-    customtkinter.CTkLabel(frm, text="Bienvenido a nuestro software de perfilamiento de clientes, Calamita").grid(column=0,row=0)
+    GUI.geometry("600x512")
+    GUI.configure(background="#000000")
+    GUI.rowconfigure(0, weight=0)
+    GUI.columnconfigure((0,2),weight=1)
+    
+    
    #region normal WorkFlow
     def helpWindow():
         messagebox.showinfo("Ayuda funcionamiento", "1. Registrarse \n 2. Subir los datos de la empresa \n 3. Puedes analizar los datos ingresados con un CRUD integrado de excel \n 4. Realizar el entrenamiento de los modelos de clustering y luego el modelo predictivo \n 5. Se habilita la opción de descargar un bundle (Pickle) de los modelos \n 6.Descargar la data con los clusters calculados")
@@ -146,23 +148,24 @@ try:
         empresas[0].predictiveModel()
         exportButton.configure(state="normal")
     #endregion
-    
-    
-    registrobutton=customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8,command=openNewWindow, text="Registro")
-    registrobutton.grid(column=0,row=1)
-    customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8,command=helpWindow, text="Ayuda").grid(column=1,row=5)
-    upload_data = customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8, command=openFileExplorer,text="Subir datos",state=DISABLED)
-    upload_data.grid(column=0,row=2)
-    clustering = customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8, command=clusteringModel, text= "Perfilar base de datos",state=DISABLED)
-    clustering.grid(column=0,row=3)
-    predictive = customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8, command=predictiveModel, text= "Modelo predictivo",state=DISABLED)
-    predictive.grid(column=1,row=2)
-    exportButton = customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8, command=exportModels, text= "Descargar bundle de modelos",state=DISABLED)
-    exportButton.grid(column=0,row=4)
-    exportDataButton = customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8, command=exportData, text= "Exportar el perfilado a excel",state=DISABLED)
-    exportDataButton.grid(column=0,row=5)
-    analisisButton = customtkinter.CTkButton(frm,width=120,height=32,border_width=0,corner_radius=8, command=dataAnalysis,text="Analizar datos",state=DISABLED)
-    analisisButton.grid(column=1,row=3)
+    font_tuple = ("Times New Roman",30)
+    customtkinter.CTkButton(GUI, image=MINIfotosapo,text="",fg_color="#000000",state=DISABLED).grid(column=1,row=2)
+    customtkinter.CTkLabel(GUI,width=220,height=52,text="CALAMITA", fg_color="#000000",text_color="#FFFFFF",text_font=font_tuple).grid(column=1,row=3)
+    registrobutton=customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8,command=openNewWindow, text="Registro")
+    registrobutton.grid(column=0,row=1,pady=20)
+    customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8,command=helpWindow, text="Ayuda").grid(column=2,row=4,pady=20)
+    upload_data = customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8, command=openFileExplorer,text="Subir datos",state=DISABLED)
+    upload_data.grid(column=2,row=1,pady=20)
+    clustering = customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8, command=clusteringModel, text= "Perfilar base de datos",state=DISABLED)
+    clustering.grid(column=0,row=2,pady=20)
+    predictive = customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8, command=predictiveModel, text= "Modelo predictivo",state=DISABLED)
+    predictive.grid(column=0,row=3,pady=20)
+    exportButton = customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8, command=exportModels, text= "Descargar bundle de modelos",state=DISABLED)
+    exportButton.grid(column=2,row=2,pady=20)
+    exportDataButton = customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8, command=exportData, text= "Exportar el perfilado a excel",state=DISABLED)
+    exportDataButton.grid(column=2,row=3,pady=20)
+    analisisButton = customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8, command=dataAnalysis,text="Analizar datos",state=DISABLED)
+    analisisButton.grid(column=0,row=4,pady=20)
 
     
     
