@@ -22,11 +22,14 @@ try:
     MINIfotosapo = PhotoImage(file='images/MINISaposiluetaBlanco.png')
     GUI.iconphoto(False,fotosapo)
     GUI.geometry("600x512")
-    GUI.configure(background="#000000")
+    GUI.configure(background="#23272a")
     GUI.rowconfigure(0, weight=0)
     GUI.columnconfigure((0,2),weight=1)
-    
-    
+
+    buttoncolor ="#45494f"
+
+    font_tuple1 = ("Times New Roman",30)
+    font_tuple2 = ("Times New Roman",15)
    #region normal WorkFlow
     def helpWindow():
         messagebox.showinfo("Ayuda funcionamiento", "1. Registrarse \n 2. Subir los datos de la empresa \n 3. Puedes analizar los datos ingresados con un CRUD integrado de excel \n 4. Realizar el entrenamiento de los modelos de clustering y luego el modelo predictivo \n 5. Se habilita la opción de descargar un bundle (Pickle) de los modelos \n 6.Descargar la data con los clusters calculados")
@@ -35,8 +38,8 @@ try:
         name_obj = nombre_empresa.get()
         sector_obj = sector_empresa.get()
         if name_obj != "" and sector_obj!= "":      
-            nombre_empresa.config(state=DISABLED)
-            sector_empresa.config(state=DISABLED)
+            nombre_empresa.configure(state=DISABLED)
+            sector_empresa.configure(state=DISABLED)
             empresas.append(Empresa(name_obj, sector_obj)) 
             messagebox.showinfo(message="Registro exitoso", title="Update")
             upload_data.configure(state="normal")
@@ -57,16 +60,19 @@ try:
         newWindow.iconphoto(False,fotosapo)
         # sets the geometry of toplevel
         newWindow.geometry("1024x768")
+        newWindow.configure(background="#23272a")
+        newWindow.rowconfigure(0, weight=0)
+        newWindow.columnconfigure(0,weight=1)
         # A Label widget to show in toplevel
-        Label(newWindow,
-            text ="Datos de la empresa").pack()
-        Label(newWindow,text="Nombre empresa").pack()
-        nombre_empresa = ttk.Entry(newWindow)
-        nombre_empresa.pack()
-        Label(newWindow,text="Sector empresa").pack()
-        sector_empresa = ttk.Entry(newWindow)
-        sector_empresa.pack()
-        customtkinter.CTkButton(newWindow,width=120,height=32,border_width=0,corner_radius=8,command=lambda: createEmpresa(nombre_empresa,sector_empresa),text="Enviar datos").pack()
+        customtkinter.CTkLabel(newWindow,
+            text ="Datos de la empresa",fg_color="#23272a",text_font=font_tuple1).grid(column=0, row=0, pady=20)
+        customtkinter.CTkLabel(newWindow,text="Nombre empresa",fg_color="#23272a",text_font=font_tuple2).grid(column=0, row=1, pady=20)
+        nombre_empresa = customtkinter.CTkEntry(newWindow)
+        nombre_empresa.grid(column=0, row=3, pady=5)
+        customtkinter.CTkLabel(newWindow,text="Sector empresa",fg_color="#23272a",text_font=font_tuple2).grid(column=0, row=4, pady=20)
+        sector_empresa = customtkinter.CTkEntry(newWindow)
+        sector_empresa.grid(column=0, row=5, pady=5)
+        customtkinter.CTkButton(newWindow,width=230,height=52,border_width=0,corner_radius=8,fg_color=buttoncolor,text_font=font_tuple2,command=lambda: createEmpresa(nombre_empresa,sector_empresa),text="Enviar datos").grid(column=0, row=6, pady=50)
         
 
     #endregion
@@ -102,10 +108,11 @@ try:
     
     def exportData():
         empresas[0].exportData()
+        messagebox.showinfo(message="Excel exportado", title="Update")
    
     def dataAnalysis():
         data = empresas[0].dataStatistics() #data.describe() #Buscar como mostrar el describe
-        f = Toplevel(GUI)
+        f = customtkinter.CTkToplevel(GUI)
         table = pt = Table(f, dataframe=empresas[0].data,
                                     showtoolbar=True, showstatusbar=True)
         pt.show()
@@ -148,23 +155,23 @@ try:
         empresas[0].predictiveModel()
         exportButton.configure(state="normal")
     #endregion
-    font_tuple = ("Times New Roman",30)
-    customtkinter.CTkButton(GUI, image=MINIfotosapo,text="",fg_color="#000000",state=DISABLED).grid(column=1,row=2)
-    customtkinter.CTkLabel(GUI,width=220,height=52,text="CALAMITA", fg_color="#000000",text_color="#FFFFFF",text_font=font_tuple).grid(column=1,row=3)
-    registrobutton=customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8,command=openNewWindow, text="Registro")
+    
+    customtkinter.CTkButton(GUI, image=MINIfotosapo,text="",fg_color="#23272a",state=DISABLED).grid(column=1,row=2)
+    customtkinter.CTkLabel(GUI,width=250,height=52,text="CALAMITA", fg_color="#23272a",text_color="#FFFFFF",text_font=font_tuple1).grid(column=1,row=3)
+    registrobutton=customtkinter.CTkButton(GUI,width=250,height=52,border_width=0,corner_radius=8,command=openNewWindow, text="Registro",fg_color=buttoncolor,text_font=font_tuple2)
     registrobutton.grid(column=0,row=1,pady=20)
-    customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8,command=helpWindow, text="Ayuda").grid(column=2,row=4,pady=20)
-    upload_data = customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8, command=openFileExplorer,text="Subir datos",state=DISABLED)
+    customtkinter.CTkButton(GUI,width=250,height=52,border_width=0,corner_radius=8,command=helpWindow, text="Ayuda",fg_color=buttoncolor,text_font=font_tuple2).grid(column=2,row=4,pady=20)
+    upload_data = customtkinter.CTkButton(GUI,width=250,height=52,border_width=0,corner_radius=8, command=openFileExplorer,text="Subir datos",state=DISABLED,fg_color=buttoncolor,text_font=font_tuple2)
     upload_data.grid(column=2,row=1,pady=20)
-    clustering = customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8, command=clusteringModel, text= "Perfilar base de datos",state=DISABLED)
+    clustering = customtkinter.CTkButton(GUI,width=250,height=52,border_width=0,corner_radius=8, command=clusteringModel, text= "Perfilar base de datos",state=DISABLED,fg_color=buttoncolor,text_font=font_tuple2)
     clustering.grid(column=0,row=2,pady=20)
-    predictive = customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8, command=predictiveModel, text= "Modelo predictivo",state=DISABLED)
+    predictive = customtkinter.CTkButton(GUI,width=250,height=52,border_width=0,corner_radius=8, command=predictiveModel, text= "Modelo predictivo",state=DISABLED,fg_color=buttoncolor,text_font=font_tuple2)
     predictive.grid(column=0,row=3,pady=20)
-    exportButton = customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8, command=exportModels, text= "Descargar bundle de modelos",state=DISABLED)
+    exportButton = customtkinter.CTkButton(GUI,width=250,height=52,border_width=0,corner_radius=8, command=exportModels, text= "Descargar bundle de modelos",state=DISABLED,fg_color=buttoncolor,text_font=font_tuple2)
     exportButton.grid(column=2,row=2,pady=20)
-    exportDataButton = customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8, command=exportData, text= "Exportar el perfilado a excel",state=DISABLED)
+    exportDataButton = customtkinter.CTkButton(GUI,width=250,height=52,border_width=0,corner_radius=8, command=exportData, text= "Exportar el perfilado a excel",state=DISABLED,fg_color=buttoncolor,text_font=font_tuple2)
     exportDataButton.grid(column=2,row=3,pady=20)
-    analisisButton = customtkinter.CTkButton(GUI,width=220,height=52,border_width=0,corner_radius=8, command=dataAnalysis,text="Analizar datos",state=DISABLED)
+    analisisButton = customtkinter.CTkButton(GUI,width=250,height=52,border_width=0,corner_radius=8, command=dataAnalysis,text="Analizar datos",state=DISABLED,fg_color=buttoncolor,text_font=font_tuple2)
     analisisButton.grid(column=0,row=4,pady=20)
 
     
